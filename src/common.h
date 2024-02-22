@@ -1,10 +1,10 @@
 #include <SDL2/SDL.h>
 
-#ifndef COMMON_H
-#define COMMON_H
-
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
+
+#ifndef COMMON_H
+#define COMMON_H
 
 typedef enum bool {
   false,
