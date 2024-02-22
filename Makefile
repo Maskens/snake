@@ -1,8 +1,8 @@
 CC = gcc
 OBJ = main.o src/init.o
 
-snake: $(OBJ)
-	$(CC) -o snake $(OBJ) -I include -L /usr/local/lib -l SDL2 -l SDL2_image
+src/snake: $(OBJ)
+	$(CC) -o bin/snake $(OBJ) -I include -L /usr/local/lib -l SDL2 -l SDL2_image
 
 main.o: main.c
 	$(CC) -c main.c

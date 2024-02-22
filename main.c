@@ -22,8 +22,8 @@ int main(int argc, char *argv[]) {
     SDL_Rect rect;
     rect.x = 10;
     rect.y = 10;
-    rect.h = 30;
-    rect.w = 30;
+    rect.h = 100;
+    rect.w = 100;
   
     SDL_RenderClear(game.renderer);
 
