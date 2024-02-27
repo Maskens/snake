@@ -1,5 +1,6 @@
 #include "common.h"
 #include <SDL2/SDL.h>
+#include <stdio.h>
 
 bool Init_SDL(Game* game) {
   if(SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -13,6 +14,7 @@ bool Init_SDL(Game* game) {
                             WINDOW_WIDTH,
                             WINDOW_HEIGHT,
                             0);
+  SDL_SetWindowTitle(game->window, "Snake");
   game->renderer = SDL_CreateRenderer(game->window, -1, 0);
 
   if (game->window == NULL) {

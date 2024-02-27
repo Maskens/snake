@@ -1,42 +1,40 @@
-#include <SDL2/SDL.h>
-#include "src/init.h"
+#include "SDL2/SDL_events.h"
+#include "SDL2/SDL_log.h"
 #include "src/common.h"
+#include "src/init.h"
+#include "src/player.h"
+#include <SDL2/SDL.h>
 
 int main(int argc, char *argv[]) {
   bool isRunning = true;
   Game game;
 
-  if(!Init_SDL(&game)) {
+  if (!Init_SDL(&game)) {
     return 1;
   }
 
-  while(isRunning) {
+  while (isRunning) {
     SDL_Event event;
 
-    while(SDL_PollEvent(&event)) {
-      if(event.type == SDL_QUIT) {
+    while (SDL_PollEvent(&event)) {
+      if (event.type == SDL_QUIT) {
         isRunning = false;
+      }
+
+      if (event.type == SDL_KEYDOWN) {
+        set_player_dir(event);
       }
     }
 
-    SDL_Rect rect;
-    rect.x = 10;
-    rect.y = 10;
-    rect.h = 100;
-    rect.w = 100;
-  
+    move_player();
+
     SDL_RenderClear(game.renderer);
 
-    // Draw snake, move this to snake file
-    SDL_SetRenderDrawColor(game.renderer, 0, 204, 0, 255);
-    SDL_RenderDrawRect(game.renderer, &rect);
-    SDL_RenderFillRect(game.renderer, &rect);
-    // End of draw snake ***
-    
+    draw_player(game.renderer);
+
     SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 255);
     SDL_RenderPresent(game.renderer);
   }
 
   return 0;
 }
-

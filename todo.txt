@@ -1,0 +1,10 @@
+* Update player dir based on input DONE
+* Move player after certain ticks DONE
+
+Lets say we move snake after some mseconds
+
+Wait for timer to reach certain threshold, then move_player
+Reset timer
+
+
+
