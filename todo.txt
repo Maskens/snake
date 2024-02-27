@@ -1,3 +1,7 @@
+* Implement movement with head moving first then parts after...
+* Add move guard so that snake cannot move against itself
+
+* Implement snake body, with linked list DONE
 * Update player dir based on input DONE
 * Move player after certain ticks DONE
 

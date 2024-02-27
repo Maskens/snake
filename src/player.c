@@ -4,7 +4,13 @@
 #include <SDL2/SDL.h>
 
 static int SIZE = 16;
-static int MOVE_SPEED_MS = 500;
+static int MOVE_SPEED_MS = 200;
+
+struct BodyPart {
+  int x;
+  int y;
+  struct BodyPart *next;
+};
 
 struct Pos {
   int x;
@@ -18,9 +24,58 @@ enum Dir {
   RIGHT
 };
 
+static struct Pos START_POS = { 160, 160 };
 static enum Dir currentMoveDirection = RIGHT;
-static struct Pos position = { 100, 100 };
 static int timeToMove = 0;
+
+struct BodyPart *head;
+
+void init_player() {
+  struct BodyPart *part2 = malloc(sizeof(struct BodyPart));
+  part2->x = START_POS.x - SIZE - SIZE;
+  part2->y = START_POS.y;
+  part2->next = NULL;
+
+  struct BodyPart *part1 = malloc(sizeof(struct BodyPart));
+  part1->x = START_POS.x - SIZE;
+  part1->y = START_POS.y;
+  part1->next = part2;
+
+  head = malloc(sizeof(struct BodyPart));
+  head->x = START_POS.x;
+  head->y = START_POS.y;
+  head->next = part1;
+}
+
+void destroy_player() {
+  // Free memory
+  struct BodyPart* curPtr = head;
+
+  while(curPtr->next != NULL) {
+    struct BodyPart* oldPtr = curPtr;
+    SDL_Log("Destroy node");
+    curPtr = curPtr->next;
+    free(oldPtr);
+  }
+
+    SDL_Log("Destroy node");
+  free(curPtr);
+}
+
+static void updateBodyPartsPos(struct Pos deltaPos) {
+  struct BodyPart *curPtr = head;
+
+  while(1) {
+    curPtr->x += deltaPos.x;
+    curPtr->y += deltaPos.y;
+  
+    curPtr = curPtr->next;
+
+    if(curPtr == NULL) {
+      break; // We are done
+    }
+  }
+}
 
 void move_player() {
   int curTime = SDL_GetTicks();
@@ -31,20 +86,24 @@ void move_player() {
     timeToMove = curTime + MOVE_SPEED_MS;
   }
 
+  struct Pos deltaPos = { 0, 0 };
+
   switch (currentMoveDirection) {
     case UP:
-      position.y -= SIZE;
+      deltaPos.y -= SIZE;
     break;
     case DOWN:
-      position.y += SIZE;
+      deltaPos.y += SIZE;
     break;
     case LEFT:
-      position.x -= SIZE;
+      deltaPos.x -= SIZE;
     break;
     case RIGHT:
-      position.x += SIZE;
+      deltaPos.x += SIZE;
     break;
   }
+
+  updateBodyPartsPos(deltaPos);
 }
 
 void set_player_dir(SDL_Event event) {
@@ -65,14 +124,23 @@ void set_player_dir(SDL_Event event) {
 }
 
 void draw_player(SDL_Renderer *renderer) {
+  SDL_SetRenderDrawColor(renderer, 0, 204, 0, 255);
+
+  struct BodyPart *curPtr = head;
+
+  while(1) {
     SDL_Rect rect;
-    rect.x = position.x;
-    rect.y = position.y;
+    rect.x = curPtr->x;
+    rect.y = curPtr->y;
     rect.h = SIZE;
     rect.w = SIZE;
   
-    SDL_SetRenderDrawColor(renderer, 0, 204, 0, 255);
     SDL_RenderDrawRect(renderer, &rect);
     SDL_RenderFillRect(renderer, &rect);
+    curPtr = curPtr->next;
 
+    if(curPtr == NULL) {
+      break; // We are done
+    }
+  }
 }

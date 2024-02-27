@@ -1,5 +1,4 @@
 #include "SDL2/SDL_events.h"
-#include "SDL2/SDL_log.h"
 #include "src/common.h"
 #include "src/init.h"
 #include "src/player.h"
@@ -12,6 +11,8 @@ int main(int argc, char *argv[]) {
   if (!Init_SDL(&game)) {
     return 1;
   }
+
+  init_player();
 
   while (isRunning) {
     SDL_Event event;
@@ -35,6 +36,8 @@ int main(int argc, char *argv[]) {
     SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 255);
     SDL_RenderPresent(game.renderer);
   }
+
+  destroy_player();
 
   return 0;
 }
