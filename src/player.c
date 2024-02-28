@@ -13,11 +13,6 @@ struct BodyPart {
   struct BodyPart *next;
 };
 
-struct Pos {
-  int x;
-  int y;
-};
-
 enum Dir {
   UP,
   DOWN,

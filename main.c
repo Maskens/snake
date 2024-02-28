@@ -1,12 +1,16 @@
 #include "SDL2/SDL_events.h"
+#include <SDL2/SDL.h>
 #include "src/common.h"
 #include "src/init.h"
 #include "src/player.h"
-#include <SDL2/SDL.h>
+
+struct Pos* spawn_food();
 
 int main(int argc, char *argv[]) {
   bool isRunning = true;
   Game game;
+
+  struct Pos *food = spawn_food();  // Move this to food.c
 
   if (!Init_SDL(&game)) {
     return 1;
@@ -32,6 +36,8 @@ int main(int argc, char *argv[]) {
     SDL_RenderClear(game.renderer);
 
     draw_player(game.renderer);
+
+    // Draw food
 
     SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 255);
     SDL_RenderPresent(game.renderer);
