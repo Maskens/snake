@@ -1,6 +1,8 @@
-* Implement movement with head moving first then parts after...
-* Add move guard so that snake cannot move against itself
+* Randomly spawn food around the map, on at a time
 
+* Wrap snake around screen DONE
+* Add move guard so that snake cannot move against itself DONE
+* Implement movement with head moving first then parts after... DONE
 * Implement snake body, with linked list DONE
 * Update player dir based on input DONE
 * Move player after certain ticks DONE

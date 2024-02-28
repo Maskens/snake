@@ -2,6 +2,7 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_timer.h"
 #include <SDL2/SDL.h>
+#include "common.h"
 
 static int SIZE = 16;
 static int MOVE_SPEED_MS = 200;
@@ -27,6 +28,7 @@ enum Dir {
 static struct Pos START_POS = { 160, 160 };
 static enum Dir currentMoveDirection = RIGHT;
 static int timeToMove = 0;
+static int canChangeDir = 1;
 
 struct BodyPart *head;
 
@@ -62,19 +64,62 @@ void destroy_player() {
   free(curPtr);
 }
 
-static void updateBodyPartsPos(struct Pos deltaPos) {
+static void wrapSnake() {
   struct BodyPart *curPtr = head;
-
   while(1) {
-    curPtr->x += deltaPos.x;
-    curPtr->y += deltaPos.y;
-  
+    if(curPtr->x >= WINDOW_WIDTH) {
+      curPtr->x = 0;
+    }
+
+    if(curPtr->x < 0) {
+      curPtr->x = WINDOW_WIDTH - SIZE;
+    }
+
+    if(curPtr->y >= WINDOW_HEIGHT) {
+      curPtr->y = 0;
+    }
+
+    if(curPtr->y < 0) {
+      curPtr->y = WINDOW_HEIGHT - SIZE;
+    }
+
     curPtr = curPtr->next;
 
     if(curPtr == NULL) {
+      break;
+    }
+  }
+}
+
+static void moveBodyParts(struct Pos deltaPos) {
+  int prevX = head->x;
+  int prevY = head->y;
+
+  //Move head with delta pos
+  head->x += deltaPos.x;
+  head->y += deltaPos.y;
+
+  //Move rest of body
+  struct BodyPart *nextPtr = head->next;
+
+  while(1) {
+    int tempX = nextPtr->x;
+    int tempY = nextPtr->y;
+
+    nextPtr->x = prevX;
+    nextPtr->y = prevY;
+
+    prevX = tempX;
+    prevY = tempY;
+  
+    nextPtr = nextPtr->next;
+
+    if(nextPtr == NULL) {
       break; // We are done
     }
   }
+
+  wrapSnake();
 }
 
 void move_player() {
@@ -103,24 +148,41 @@ void move_player() {
     break;
   }
 
-  updateBodyPartsPos(deltaPos);
+  moveBodyParts(deltaPos);
+
+  canChangeDir = 1;
 }
 
 void set_player_dir(SDL_Event event) {
+
+  if(!canChangeDir) { //Fix so that player cannot move against itself, not the best fix
+    return;
+  }
+
   switch(event.key.keysym.sym) {
     case 'w':
-      currentMoveDirection = UP;
+      if(currentMoveDirection != DOWN) {
+        currentMoveDirection = UP;
+      }
       break;
     case 'a':
-      currentMoveDirection = LEFT;
+      if(currentMoveDirection != RIGHT) {
+        currentMoveDirection = LEFT;
+      }
       break;
     case 's':
-      currentMoveDirection = DOWN;
+      if(currentMoveDirection != UP) {
+        currentMoveDirection = DOWN;
+      }
       break;
     case 'd':
-      currentMoveDirection = RIGHT;
+      if(currentMoveDirection != LEFT) {
+        currentMoveDirection = RIGHT;
+      }
       break;
   }
+
+  canChangeDir = 0;
 }
 
 void draw_player(SDL_Renderer *renderer) {
