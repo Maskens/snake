@@ -6,6 +6,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+static int SIZE = 16;
+
 typedef enum bool {
   false,
   true

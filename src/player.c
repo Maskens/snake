@@ -3,15 +3,9 @@
 #include "SDL2/SDL_timer.h"
 #include <SDL2/SDL.h>
 #include "common.h"
+#include "player.h"
 
-static int SIZE = 16;
-static int MOVE_SPEED_MS = 200;
-
-struct BodyPart {
-  int x;
-  int y;
-  struct BodyPart *next;
-};
+static int MOVE_SPEED_MS = 100;
 
 enum Dir {
   UP,
@@ -27,7 +21,7 @@ static int canChangeDir = 1;
 
 struct BodyPart *head;
 
-void init_player() {
+struct BodyPart* init_player() {
   struct BodyPart *part2 = malloc(sizeof(struct BodyPart));
   part2->x = START_POS.x - SIZE - SIZE;
   part2->y = START_POS.y;
@@ -42,6 +36,8 @@ void init_player() {
   head->x = START_POS.x;
   head->y = START_POS.y;
   head->next = part1;
+
+  return head;
 }
 
 void destroy_player() {

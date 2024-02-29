@@ -1,6 +1,12 @@
 #include <SDL2/SDL.h>
 
-void init_player();
+struct BodyPart {
+  int x;
+  int y;
+  struct BodyPart *next;
+};
+
+struct BodyPart* init_player();
 void destroy_player();
 void set_player_dir(SDL_Event event);
 void move_player();
