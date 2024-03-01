@@ -9,7 +9,8 @@ struct BodyPart {
 
 void init_player();
 void grow_player();
-int collision_food(struct Pos* food);
+int player_collision_food(struct Pos* food);
+int player_collision_self();
 void destroy_player();
 void set_player_dir(SDL_Event event);
 void move_player();

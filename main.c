@@ -1,5 +1,6 @@
 #include "SDL2/SDL_events.h"
 #include <SDL2/SDL.h>
+#include "SDL2/SDL_log.h"
 #include "SDL2/SDL_render.h"
 #include "src/common.h"
 #include "src/init.h"
@@ -8,6 +9,11 @@
 struct Pos* spawn_food();
 void init_random();
 void draw_food(SDL_Renderer *renderer);
+
+typedef enum GameState {
+  RUNNING,
+  DIED,
+} GameState;
 
 int main(int argc, char *argv[]) {
   bool isRunning = true;
@@ -37,9 +43,13 @@ int main(int argc, char *argv[]) {
     }
 
     move_player();
-    if(collision_food(food)) {
+    if(player_collision_food(food)) {
       grow_player();
       food = spawn_food();
+    }
+
+    if(player_collision_self()) {
+      SDL_Log("U died!");
     }
 
     SDL_RenderClear(game.renderer);

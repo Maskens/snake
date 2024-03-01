@@ -213,7 +213,16 @@ void draw_player(SDL_Renderer *renderer) {
   }
 }
 
-int collision_food(struct Pos* food) {
+int player_collision_self() {
+  struct BodyPart *headPtr = head;
+  struct BodyPart *bodyPtr = head->next;
+
+  //Call rectangle collision func
+  return 0;
+}
+
+int player_collision_food(struct Pos* food) {
+  // Move to more generic rectangle collision function
   if (((head->x + SIZE) > food->x) &&
       ((head->y + SIZE) > food->y) &&
       (head->x < (food->x + SIZE)) &&
