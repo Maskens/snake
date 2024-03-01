@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include "common.h"
 
 struct BodyPart {
   int x;
@@ -6,7 +7,9 @@ struct BodyPart {
   struct BodyPart *next;
 };
 
-struct BodyPart* init_player();
+void init_player();
+void grow_player();
+int collision_food(struct Pos* food);
 void destroy_player();
 void set_player_dir(SDL_Event event);
 void move_player();

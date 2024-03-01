@@ -2,7 +2,6 @@
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_timer.h"
 #include <SDL2/SDL.h>
-#include "common.h"
 #include "player.h"
 
 static int MOVE_SPEED_MS = 100;
@@ -18,10 +17,11 @@ static struct Pos START_POS = { 160, 160 };
 static enum Dir currentMoveDirection = RIGHT;
 static int timeToMove = 0;
 static int canChangeDir = 1;
+static int shouldGrow = 0;
 
 struct BodyPart *head;
 
-struct BodyPart* init_player() {
+void init_player() {
   struct BodyPart *part2 = malloc(sizeof(struct BodyPart));
   part2->x = START_POS.x - SIZE - SIZE;
   part2->y = START_POS.y;
@@ -36,8 +36,6 @@ struct BodyPart* init_player() {
   head->x = START_POS.x;
   head->y = START_POS.y;
   head->next = part1;
-
-  return head;
 }
 
 void destroy_player() {
@@ -139,9 +137,26 @@ void move_player() {
     break;
   }
 
+  if (shouldGrow) {
+    struct BodyPart *newHead = malloc(sizeof(struct BodyPart));
+
+    newHead->x = head->x + deltaPos.x;
+    newHead->y = head->y + deltaPos.y;
+
+    newHead->next = head;
+
+    head = newHead;
+
+    shouldGrow = 0;
+  }
+
   moveBodyParts(deltaPos);
 
   canChangeDir = 1;
+}
+
+void grow_player() {
+  shouldGrow = 1;
 }
 
 void set_player_dir(SDL_Event event) {
@@ -197,3 +212,15 @@ void draw_player(SDL_Renderer *renderer) {
     }
   }
 }
+
+int collision_food(struct Pos* food) {
+  if (((head->x + SIZE) > food->x) &&
+      ((head->y + SIZE) > food->y) &&
+      (head->x < (food->x + SIZE)) &&
+      (head->y < (food->y + SIZE))) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+

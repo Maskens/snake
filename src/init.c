@@ -1,3 +1,4 @@
+#include "SDL2/SDL_video.h"
 #include "common.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
@@ -9,11 +10,11 @@ bool Init_SDL(Game* game) {
   }
 
   game->window = SDL_CreateWindow("My window",
-                            SDL_WINDOWPOS_UNDEFINED,
-                            SDL_WINDOWPOS_UNDEFINED,
+                            SDL_WINDOWPOS_CENTERED,
+                            SDL_WINDOWPOS_CENTERED,
                             WINDOW_WIDTH,
                             WINDOW_HEIGHT,
-                            0);
+                            SDL_WINDOW_SHOWN);
   SDL_SetWindowTitle(game->window, "Snake");
   game->renderer = SDL_CreateRenderer(game->window, -1, 0);
 

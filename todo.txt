@@ -1,5 +1,9 @@
-* Randomly spawn food around the map, on at a time
+* Implement snake collision with itself, and restart game if that happens
+* If dies pause game for a second and blink snake
 
+* Grow snake DONE
+  - Create new head in front of old head when its time to move
+* Randomly spawn food around the map, on at a time DONE
 * Wrap snake around screen DONE
 * Add move guard so that snake cannot move against itself DONE
 * Implement movement with head moving first then parts after... DONE

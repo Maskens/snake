@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 
 #define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_HEIGHT 592
 
 #ifndef COMMON_H
 #define COMMON_H
