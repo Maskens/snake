@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include "SDL2/SDL_log.h"
 #include "SDL2/SDL_render.h"
+#include "SDL2/SDL_stdinc.h"
 #include "src/common.h"
 #include "src/init.h"
 #include "src/player.h"
@@ -16,7 +17,7 @@ typedef enum GameState {
 } GameState;
 
 int main(int argc, char *argv[]) {
-  bool isRunning = true;
+  SDL_bool isRunning = SDL_TRUE;
   Game game;
   struct BodyPart* player;
   struct Pos* food;
@@ -34,7 +35,7 @@ int main(int argc, char *argv[]) {
 
     while (SDL_PollEvent(&event)) {
       if (event.type == SDL_QUIT) {
-        isRunning = false;
+        isRunning = SDL_FALSE;
       }
 
       if (event.type == SDL_KEYDOWN) {
