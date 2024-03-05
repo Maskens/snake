@@ -3,6 +3,7 @@
 #include "SDL2/SDL_log.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_stdinc.h"
+#include "SDL2/SDL_timer.h"
 #include "src/common.h"
 #include "src/init.h"
 #include "src/player.h"
@@ -12,9 +13,18 @@ void init_random();
 void draw_food(SDL_Renderer *renderer);
 
 typedef enum GameState {
-  RUNNING,
+  PLAYING,
   DIED,
+  RESTART
 } GameState;
+
+static GameState gameState = PLAYING;
+
+Uint32 callback(Uint32 interval, void* foo) {
+  SDL_Log("Restart!");
+  gameState = RESTART;
+  return 0;
+}
 
 int main(int argc, char *argv[]) {
   SDL_bool isRunning = SDL_TRUE;
@@ -22,6 +32,7 @@ int main(int argc, char *argv[]) {
   struct BodyPart* player;
   struct Pos* food;
   init_random();
+  SDL_TimerID timerId;
 
   if (!Init_SDL(&game)) {
     return 1;
@@ -43,15 +54,33 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    move_player();
-    if(player_collision_food(food)) {
-      grow_player();
-      food = spawn_food();
-    }
+    switch(gameState) {
+      case PLAYING:
+        move_player();
+        if(player_collision_food(food)) {
+          grow_player();
+          food = spawn_food();
+        }
 
-    if(player_collision_self()) {
-      SDL_Log("U died!");
-    }
+        if(player_collision_self()) {
+          timerId = SDL_AddTimer(
+            DEATH_ANIM_LENGTH_MS, 
+            &callback, 
+            NULL
+          );
+          gameState = DIED;
+        }
+        break;
+      case DIED:
+        blink_player();
+      break;
+      case RESTART:
+        destroy_player();
+        food = spawn_food();
+        init_player();
+        gameState = PLAYING;
+        break;
+    } 
 
     SDL_RenderClear(game.renderer);
 
@@ -62,8 +91,8 @@ int main(int argc, char *argv[]) {
     SDL_RenderPresent(game.renderer);
   }
 
+  SDL_RemoveTimer(timerId);
   destroy_player();
 
   return 0;
 }
-

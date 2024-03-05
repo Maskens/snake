@@ -6,6 +6,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define DEATH_ANIM_LENGTH_MS 3000
+
 static int SIZE = 16;
 
 typedef enum bool {

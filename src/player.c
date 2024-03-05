@@ -1,6 +1,7 @@
 #include "player.h"
 #include "SDL2/SDL_events.h"
 #include "SDL2/SDL_log.h"
+#include "SDL2/SDL_pixels.h"
 #include "SDL2/SDL_rect.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_stdinc.h"
@@ -12,14 +13,26 @@ static int MOVE_SPEED_MS = 100;
 enum Dir { UP, DOWN, LEFT, RIGHT };
 
 static struct Pos START_POS = {160, 160};
+static struct SDL_Color playerColor = { 0, 204, 0, 255 };
 static enum Dir currentMoveDirection = RIGHT;
 static int timeToMove = 0;
 static int canChangeDir = 1;
 static int shouldGrow = 0;
+static int playerBlinkSpeed = 200;
+static SDL_TimerID blinkTimer;
 
 struct BodyPart *head;
 
 void init_player() {
+  SDL_RemoveTimer(blinkTimer);
+  currentMoveDirection = RIGHT;
+  blinkTimer = 0;
+
+  playerColor.r = 0;
+  playerColor.g = 204;
+  playerColor.b = 0;
+  playerColor.a = 255;
+
   struct BodyPart *part2 = malloc(sizeof(struct BodyPart));
   part2->x = START_POS.x - SIZE - SIZE;
   part2->y = START_POS.y;
@@ -47,7 +60,6 @@ void destroy_player() {
     free(oldPtr);
   }
 
-  SDL_Log("Destroy node");
   free(curPtr);
 }
 
@@ -189,7 +201,11 @@ void set_player_dir(SDL_Event event) {
 }
 
 void draw_player(SDL_Renderer *renderer) {
-  SDL_SetRenderDrawColor(renderer, 0, 204, 0, 255);
+  SDL_SetRenderDrawColor(renderer, 
+                         playerColor.r, 
+                         playerColor.g, 
+                         playerColor.b, 
+                         playerColor.a);
 
   struct BodyPart *curPtr = head;
 
@@ -228,6 +244,34 @@ SDL_bool player_collision_self() {
     bodyPtr = bodyPtr->next;
   } 
   return SDL_FALSE;
+}
+
+Uint32 blink(Uint32 interval, void* empty) {
+  static int toggle = 0;
+
+  if(toggle) {
+    playerColor.r = 0;
+    playerColor.g = 0;
+    playerColor.b = 0;
+    playerColor.a = 255;
+  } else {
+    playerColor.r = 0;
+    playerColor.g = 204;
+    playerColor.b = 0;
+    playerColor.a = 255;
+  }
+
+  toggle = !toggle;
+
+  return interval;
+}
+
+void blink_player() {
+
+  if(blinkTimer == 0) {
+    blinkTimer = SDL_AddTimer(playerBlinkSpeed, &blink, NULL);
+    SDL_Log("%d", blinkTimer);
+  }
 }
 
 SDL_bool player_collision_food(struct Pos *food) {

@@ -10,6 +10,7 @@ struct BodyPart {
 
 void init_player();
 void grow_player();
+void blink_player();
 SDL_bool player_collision_food(struct Pos* food);
 SDL_bool player_collision_self();
 void destroy_player();

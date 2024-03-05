@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 bool Init_SDL(Game* game) {
-  if(SDL_Init(SDL_INIT_VIDEO) != 0) {
+  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
     printf("Could not init SDL!");
     return false;
   }

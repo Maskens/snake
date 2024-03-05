@@ -1,6 +1,10 @@
-* Implement snake collision with itself, and restart game if that happens
-* If dies pause game for a second and blink snake
+* If dies pause game for a second and blink snake, restart game, reset snake
+ - Read up on SDL timers, set state died, which starts a timer that when ends,
+ sets state to restart, which deletes player and generates new one
+ Timer should be set for a certain period.
 
+
+* Implement snake collision with itself DONE
 * Grow snake DONE
   - Create new head in front of old head when its time to move
 * Randomly spawn food around the map, on at a time DONE
